@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrafficAssistant — Captures</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .captures-section { margin-bottom: 48px; }
+    .captures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 14px;
+    }
+    .cap-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .cap-card:hover { border-color: var(--blue-border); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .cap-img {
+      width: 100%; aspect-ratio: 16/9;
+      object-fit: cover; object-position: top;
+      display: block; background: var(--bg2);
+      transition: transform 0.3s;
+    }
+    .cap-card:hover .cap-img { transform: scale(1.02); }
+    .cap-info { padding: 14px 16px; }
+    .cap-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; font-family: 'JetBrains Mono', monospace; }
+    .cap-desc { font-size: 11px; color: var(--text3); }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.88);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .lightbox.open { display: flex; }
+    .lb-inner { position: relative; max-width: 1100px; width: 100%; }
+    .lb-img { width: 100%; border-radius: var(--radius); }
+    .lb-close {
+      position: absolute; top: -14px; right: -14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue); color: #fff; border: none;
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lb-caption { text-align: center; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Traffic<span>Assistant</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="etapes.html">Création</a></li>
+    <li><a href="intents.html">Intents</a></li>
+    <li><a href="captures.html" class="active">Captures</a></li>
+    <li><a href="chatbot.html">Chatbot</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+  </ul>
+  <div class="nav-badge">R-18</div>
+</nav>
+
+<div class="page-header">
+  <div class="page-label">Preuves de configuration</div>
+  <h1 class="page-title">Captures <span>Dialogflow</span></h1>
+  <p class="page-desc">Captures d'écran illustrant la configuration complète de l'agent TrafficAssistant. Cliquez sur une image pour l'agrandir.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-btn rv">← Retour à l'accueil</a>
+
+  <!-- Agent -->
+  <div class="captures-section rv">
+    <div class="section-label">Configuration de l'agent</div>
+    <div class="section-title">Création et <span>entité</span></div>
+    <div class="section-sub">Agent TrafficAssistant et entité @Technologie_Trafic</div>
+    <div class="captures-grid">
+      <div class="cap-card" data-img="images/creation.png" data-cap="Création de l'agent TrafficAssistant — Langue : Français, Fuseau : Europe/Madrid">
+        <img class="cap-img" src="images/creation.png" alt="Création agent">
+        <div class="cap-info"><div class="cap-name">Création de l'agent</div><div class="cap-desc">Configuration initiale de TrafficAssistant</div></div>
+      </div>
+      <div class="cap-card" data-img="images/entite.png" data-cap="Entité @Technologie_Trafic — RL, DRL, MARL, SURTRAC, IoT, Vision par ordinateur">
+        <img class="cap-img" src="images/entite.png" alt="Entité">
+        <div class="cap-info"><div class="cap-name">@Technologie_Trafic</div><div class="cap-desc">Entité personnalisée avec synonymes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intents -->
+  <div class="captures-section rv">
+    <div class="section-label">Intents configurés</div>
+    <div class="section-title">Phrases d'entraînement et <span>réponses</span></div>
+    <div class="section-sub">Configuration de chaque intention sur Dialogflow ES</div>
+    <div class="captures-grid" id="intentsGrid"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-inner">
+    <button class="lb-close" id="lbClose">✕</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <div class="lb-caption" id="lbCap"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Traffic<span>Assistant</span></div>
+  <div class="footer-info">L1 Informatique · Dr. S. Amarouche · 22 captures<br>UMMTO · 2025–2026</div>
+</footer>
+
+<script src="theme.js"></script>
+<script>
+const caps = [
+  { img:"images/salutation.png", name:"Salutation", desc:"Accueil et présentation" },
+  { img:"images/def_transport.png", name:"definition_transport", desc:"Définition du transport" },
+  { img:"images/gst_intelli_trafic.png", name:"gestion_intelligente_trafic", desc:"Gestion intelligente du trafic" },
+  { img:"images/role_ia_transport_technique.png", name:"role_ia_transport_technique", desc:"Rôle technique de l'IA" },
+  { img:"images/problem_traffic.png", name:"problemes_trafic", desc:"Problèmes du trafic urbain" },
+  { img:"images/feux_intelligents.png", name:"feux_intelligents", desc:"Feux de circulation intelligents" },
+  { img:"images/cptr_iotV2.0.png", name:"capteurs_iot", desc:"Capteurs IoT et données" },
+  { img:"images/analyse_predictive_v2.0.png", name:"analyse_predictive", desc:"Analyse prédictive du trafic" },
+  { img:"images/rl_feuxV2.0.png", name:"rl_feux_circulation", desc:"Reinforcement Learning" },
+  { img:"images/drl_techniqueV2.0.png", name:"drl_technique", desc:"Deep Reinforcement Learning" },
+  { img:"images/marlV2.0.png", name:"systeme_multi_agents", desc:"Systèmes Multi-Agents" },
+  { img:"images/technique_apprenV2.0.png", name:"technique_apprentissage", desc:"Logique d'apprentissage" },
+  { img:"images/environ_simulation.png", name:"environnement_simulation", desc:"SUMO et CityFlow" },
+  { img:"images/optimisation_temp_V2.0.png", name:"optimisation_temps_parcours", desc:"Optimisation du temps" },
+  { img:"images/securite_routiere.png", name:"securite_routiere", desc:"Sécurité routière" },
+  { img:"images/impact_ecologiqueV2.0.png", name:"impact_ecologique", desc:"Impact environnemental" },
+  { img:"images/avantageV2.0.png", name:"avantages", desc:"Avantages de l'IA" },
+  { img:"images/limite_iaV2.0.png", name:"limites_ia", desc:"Limites et risques" },
+  { img:"images/fallback.png", name:"Default Fallback", desc:"Gestion des incompréhensions" },
+  { img:"images/goodbye.png", name:"Goodbye", desc:"Fin de conversation" },
+
+];
+
+const grid = document.getElementById('intentsGrid');
+caps.forEach(c => {
+  const el = document.createElement('div');
+  el.className = 'cap-card';
+  el.dataset.img = c.img;
+  el.dataset.cap = `${c.name} — ${c.desc}`;
+  el.innerHTML = `<img class="cap-img" src="${c.img}" alt="${c.name}" loading="lazy"><div class="cap-info"><div class="cap-name">${c.name}</div><div class="cap-desc">${c.desc}</div></div>`;
+  grid.appendChild(el);
+});
+
+// Lightbox
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+const lbCap = document.getElementById('lbCap');
+document.querySelectorAll('.cap-card').forEach(c => {
+  c.addEventListener('click', () => {
+    lbImg.src = c.dataset.img;
+    lbCap.textContent = c.dataset.cap;
+    lb.classList.add('open');
+  });
+});
+document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('open'));
+lb.addEventListener('click', e => { if(e.target === lb) lb.classList.remove('open'); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') lb.classList.remove('open'); });
+</script>
+</body>
+</html>

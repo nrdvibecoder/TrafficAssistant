@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrafficAssistant — À propos</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Project info */
+    .project-box {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; margin-bottom: 40px;
+      position: relative; overflow: hidden;
+    }
+    .project-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--blue); }
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+    .proj-label { font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .proj-value { font-size: 14px; font-weight: 600; color: var(--text); }
+
+    /* Team */
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .member-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      display: flex; align-items: flex-start; gap: 16px;
+      transition: all 0.25s;
+    }
+    .member-card:hover { border-color: var(--blue-border); box-shadow: var(--shadow-hover); }
+    .member-card.highlight { border-color: var(--blue-border); }
+    .avatar {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .av-blue { background: rgba(0,85,255,.1); color: var(--blue); border: 1px solid var(--blue-border); }
+    .av-green { background: rgba(16,185,129,.1); color: #10b981; border: 1px solid rgba(16,185,129,.25); }
+    .av-orange { background: rgba(249,115,22,.1); color: #f97316; border: 1px solid rgba(249,115,22,.25); }
+    .av-purple { background: rgba(139,92,246,.1); color: #8b5cf6; border: 1px solid rgba(139,92,246,.25); }
+    .av-teal { background: rgba(34,211,238,.1); color: #06b6d4; border: 1px solid rgba(34,211,238,.25); }
+    .av-rose { background: rgba(244,63,94,.1); color: #f43f5e; border: 1px solid rgba(244,63,94,.25); }
+
+    .member-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .member-role-badge {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px; border-radius: 20px;
+      background: var(--blue-pale); color: var(--blue);
+      border: 1px solid var(--blue-border); margin-bottom: 10px;
+    }
+    .member-tasks { font-size: 12px; color: var(--text2); line-height: 1.7; }
+
+    /* About box */
+    .about-box {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; margin-top: 40px;
+      text-align: center;
+    }
+    .about-box-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+    .about-box-title span { color: var(--blue); }
+    .about-box-desc { font-size: 13px; color: var(--text2); line-height: 1.75; max-width: 600px; margin: 0 auto; }
+
+    @media(max-width:768px){ .team-grid { grid-template-columns: 1fr; } .project-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Traffic<span>Assistant</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="etapes.html">Création</a></li>
+    <li><a href="intents.html">Intents</a></li>
+    <li><a href="captures.html">Captures</a></li>
+    <li><a href="chatbot.html">Chatbot</a></li>
+    <li><a href="apropos.html" class="active">À propos</a></li>
+  </ul>
+  <div class="nav-badge">R-18</div>
+</nav>
+
+<div class="page-header center">
+  <div class="page-label">L'équipe du projet</div>
+  <h1 class="page-title">À <span>propos</span></h1>
+  <p class="page-desc">Présentation du groupe ayant réalisé ce projet dans le cadre du cours d'Introduction à l'Intelligence Artificielle.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-btn rv">← Retour à l'accueil</a>
+
+  <!-- Project info -->
+  <div class="project-box rv">
+    <div class="section-label">Informations du projet</div>
+    <div class="section-title">Fiche <span>académique</span></div>
+    <div class="project-grid">
+      <div><div class="proj-label">Unité d'enseignement</div><div class="proj-value">Introduction à l'IA</div></div>
+      <div><div class="proj-label">Niveau</div><div class="proj-value">L1 Informatique — Section 1</div></div>
+      <div><div class="proj-label">Encadrante</div><div class="proj-value">Dr. S. Amarouche</div></div>
+      <div><div class="proj-label">Groupe</div><div class="proj-value">Groupe 2</div></div>
+      <div><div class="proj-label">Thématique</div><div class="proj-value">Gestion intelligente du trafic urbain</div></div>
+      <div><div class="proj-label">Technologie</div><div class="proj-value">Google Dialogflow ES</div></div>
+      <div><div class="proj-label">Université</div><div class="proj-value">UMMTO — Tizi-Ouzou</div></div>
+      <div><div class="proj-label">Année</div><div class="proj-value">2025 – 2026</div></div>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <div class="section-label rv">Membres</div>
+  <div class="section-title rv">Les <span>6 membres</span> du groupe</div>
+  <div class="section-sub rv">Groupe 2 — L1 Informatique Section 1</div>
+  <div class="team-grid">
+    <div class="member-card highlight rv">
+      <div class="avatar av-blue">BR</div>
+      <div>
+        <div class="member-name">BOUDALI Rayane</div>
+        <div class="member-role-badge">Rédaction & mise en page</div>
+        <div class="member-tasks">Rédaction des sections · Structuration du contenu · Mise en forme académique · Relecture et correction</div>
+      </div>
+    </div>
+    <div class="member-card rv">
+      <div class="avatar av-green">AL</div>
+      <div>
+        <div class="member-name">ALIANE Lydia</div>
+        <div class="member-role-badge">Introduction & thématique</div>
+        <div class="member-tasks">Rédaction de l'introduction · Choix et justification de la thématique · Définition de la problématique</div>
+      </div>
+    </div>
+    <div class="member-card highlight rv">
+      <div class="avatar av-blue">BN</div>
+      <div>
+        <div class="member-name">BENSADI Noureddine</div>
+        <div class="member-role-badge">Développement technique</div>
+        <div class="member-tasks">Implémentation Dialogflow · Développement du site web · Hébergement et mise en ligne · Tests et validation</div>
+      </div>
+    </div>
+    <div class="member-card rv">
+      <div class="avatar av-orange">AF</div>
+      <div>
+        <div class="member-name">AMMAR-KHODJA Farouk</div>
+        <div class="member-role-badge">Méthodologie</div>
+        <div class="member-tasks">Rédaction de la méthodologie · Présentation des outils et requêtes · Intégration de l'IA dans le processus</div>
+      </div>
+    </div>
+    <div class="member-card rv">
+      <div class="avatar av-teal">KA</div>
+      <div>
+        <div class="member-name">KHRIS Agnès</div>
+        <div class="member-role-badge">Recherche documentaire</div>
+        <div class="member-tasks">Sélection des 7 articles · Analyse et synthèse · Rédaction de la bibliographie</div>
+      </div>
+    </div>
+    <div class="member-card rv">
+      <div class="avatar av-rose">LA</div>
+      <div>
+        <div class="member-name">LAMI Abderrezak</div>
+        <div class="member-role-badge">Discussion & conclusion</div>
+        <div class="member-tasks">Analyse des avantages de l'IA · Identification des limites et risques · Rédaction de la conclusion</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="about-box rv">
+    <div class="about-box-title">TrafficAssistant — <span>Projet IA</span></div>
+    <div class="about-box-desc">Ce projet a été réalisé dans le cadre de l'unité d'enseignement Introduction à l'Intelligence Artificielle, L1 Informatique Section 1, à l'Université Mouloud Mammeri de Tizi-Ouzou. Il consiste en la création d'un chatbot intelligent sur le domaine du Transport, thématique : Gestion intelligente du trafic urbain, en utilisant Google Dialogflow ES.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Traffic<span>Assistant</span></div>
+  <div class="footer-info">L1 Informatique · Groupe 2 · Dr. S. Amarouche<br>UMMTO · 2025–2026</div>
+</footer>
+
+<script src="theme.js"></script>
+</body>
+</html>
