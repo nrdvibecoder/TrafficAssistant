@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrafficAssistant — Chatbot</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { min-height: 100vh; }
+
+    .chatbot-page {
+      padding: 64px 40px 100px;
+      max-width: 900px; margin: 0 auto;
+    }
+
+    /* Info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px; margin-bottom: 40px;
+    }
+    .info-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 18px 20px;
+    }
+    .info-card-label { font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .info-card-value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+    /* Topics */
+    .topics { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+    .topic {
+      font-size: 12px; font-weight: 500;
+      padding: 6px 14px; border-radius: 20px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text2); transition: all 0.2s; cursor: default;
+    }
+    .topic:hover { border-color: var(--blue-border); color: var(--blue); background: var(--blue-pale); }
+
+    /* How to use */
+    .how-box {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; margin-bottom: 40px;
+    }
+    .how-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+    .how-steps { display: flex; flex-direction: column; gap: 10px; }
+    .how-step { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; color: var(--text2); }
+    .how-num {
+      min-width: 24px; height: 24px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* Sample questions */
+    .questions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px; margin-top: 40px;
+    }
+    .question-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      transition: all 0.2s; cursor: default;
+    }
+    .question-card:hover { border-color: var(--blue-border); background: var(--blue-pale); }
+    .question-text { font-size: 13px; color: var(--text); margin-bottom: 4px; font-weight: 500; }
+    .question-intent { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+
+    /* Dialogflow messenger custom style */
+    df-messenger {
+      --df-messenger-button-titlebar-color: #0055ff;
+      --df-messenger-chat-background-color: #f8faff;
+      --df-messenger-font-color: #0f172a;
+      --df-messenger-send-icon: #0055ff;
+      --df-messenger-user-message: #0055ff;
+    }
+
+    @media(max-width:768px){ .chatbot-page { padding: 40px 16px 100px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Traffic<span>Assistant</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="etapes.html">Création</a></li>
+    <li><a href="intents.html">Intents</a></li>
+    <li><a href="captures.html">Captures</a></li>
+    <li><a href="chatbot.html" class="active">Chatbot</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+  </ul>
+  <div class="nav-badge">R-18</div>
+</nav>
+
+<div class="chatbot-page">
+  <div class="page-label" style="opacity:0;animation:fadeUp 0.6s ease 0.1s forwards">Assistant IA</div>
+  <h1 class="page-title" style="margin-bottom:12px">Discutez avec<br><span>TrafficAssistant</span></h1>
+  <p class="page-desc" style="margin-bottom:32px">Posez vos questions sur l'intelligence artificielle dans la gestion du trafic urbain. Le chatbot répond en français sur 20 sujets liés à notre thématique.</p>
+
+  <!-- Topics -->
+  <div class="topics rv">
+    <span class="topic">Feux intelligents</span>
+    <span class="topic">Capteurs IoT</span>
+    <span class="topic">Reinforcement Learning</span>
+    <span class="topic">Deep RL</span>
+    <span class="topic">Multi-Agents</span>
+    <span class="topic">Sécurité routière</span>
+    <span class="topic">Impact écologique</span>
+    <span class="topic">Prédiction du trafic</span>
+  </div>
+
+  <!-- Info -->
+  <div class="info-grid rv">
+    <div class="info-card"><div class="info-card-label">Plateforme</div><div class="info-card-value">Google Dialogflow ES</div></div>
+    <div class="info-card"><div class="info-card-label">Langue</div><div class="info-card-value">Français</div></div>
+    <div class="info-card"><div class="info-card-label">Intentions</div><div class="info-card-value">20 intents</div></div>
+    <div class="info-card"><div class="info-card-label">Entité</div><div class="info-card-value">@Technologie_Trafic</div></div>
+  </div>
+
+  <!-- How to use -->
+  <div class="how-box rv">
+    <div class="how-title">💬 Comment utiliser le chatbot ?</div>
+    <div class="how-steps">
+      <div class="how-step"><div class="how-num">1</div><div>Cliquez sur l'icône bleue en bas à droite de la page pour ouvrir le chat.</div></div>
+      <div class="how-step"><div class="how-num">2</div><div>Tapez votre question en français sur la gestion du trafic, l'IA, les feux intelligents, etc.</div></div>
+      <div class="how-step"><div class="how-num">3</div><div>TrafficAssistant vous répond instantanément basé sur le contenu de notre rapport académique.</div></div>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-btn rv">← Retour à l'accueil</a>
+
+  <!-- Sample questions -->
+  <div class="section-label rv">Questions suggérées</div>
+  <div class="section-title rv">Exemples de <span>questions</span></div>
+  <div class="section-sub rv">Essayez ces questions pour commencer</div>
+  <div class="questions-grid rv">
+    <div class="question-card"><div class="question-text">Comment fonctionne un feu intelligent ?</div><div class="question-intent">→ feux_intelligents</div></div>
+    <div class="question-card"><div class="question-text">C'est quoi le Reinforcement Learning ?</div><div class="question-intent">→ rl_feux_circulation</div></div>
+    <div class="question-card"><div class="question-text">Quels sont les problèmes du trafic ?</div><div class="question-intent">→ problemes_trafic</div></div>
+    <div class="question-card"><div class="question-text">Comment l'IA réduit la pollution ?</div><div class="question-intent">→ impact_ecologique</div></div>
+    <div class="question-card"><div class="question-text">C'est quoi le MARL ?</div><div class="question-intent">→ systeme_multi_agents</div></div>
+    <div class="question-card"><div class="question-text">Comment l'IA prédit les bouchons ?</div><div class="question-intent">→ analyse_predictive</div></div>
+    <div class="question-card"><div class="question-text">Quelles sont les limites de l'IA ?</div><div class="question-intent">→ limites_ia</div></div>
+    <div class="question-card"><div class="question-text">C'est quoi le Deep Reinforcement Learning ?</div><div class="question-intent">→ drl_technique</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Traffic<span>Assistant</span></div>
+  <div class="footer-info">L1 Informatique · Dr. S. Amarouche · Dialogflow ES<br>UMMTO · 2025–2026</div>
+</footer>
+
+<!-- Dialogflow Messenger Bubble -->
+<df-messenger
+  chat-title="TrafficAssistant"
+  agent-id="a36a81b5-d4bf-4ed8-981c-22cd330fe9f1"
+  language-code="fr">
+</df-messenger>
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+
+<script src="theme.js"></script>
+</body>
+</html>
