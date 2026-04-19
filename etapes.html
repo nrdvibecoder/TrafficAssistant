@@ -72,18 +72,15 @@
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">Traffic<span>Assistant</span></a>
-  <ul class="nav-links">
-    <li><a href="index.html">Accueil</a></li>
-    <li><a href="etapes.html" class="active">Création</a></li>
-    <li><a href="intents.html">Intents</a></li>
-    <li><a href="captures.html">Captures</a></li>
-    <li><a href="chatbot.html">Chatbot</a></li>
-    <li><a href="apropos.html">À propos</a></li>
-  </ul>
-  <div class="nav-badge">R-18</div>
-</nav>
+<div id="nav-container"></div>
+
+  <script>
+    fetch("/nav.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementByld("nav-container").innerHTML = data;
+      });
+  </script>
 
 <div class="page-header">
   <div class="page-label">Processus de création</div>
