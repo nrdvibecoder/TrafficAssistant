@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="images/favicon.png" type="image/png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TrafficAssistant — Captures</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -35,18 +35,39 @@
       position: fixed; inset: 0; z-index: 999;
       background: rgba(0,0,0,0.88);
       display: none; align-items: center; justify-content: center; padding: 24px;
+      cursor: zoom-in;
     }
     .lightbox.open { display: flex; }
-    .lb-inner { position: relative; max-width: 1100px; width: 100%; }
-    .lb-img { width: 100%; border-radius: var(--radius); }
+    .lightbox.zoomed { cursor: grab; }
+    .lightbox.zoomed.dragging { cursor: grabbing; }
+    .lb-inner {
+      position: relative; max-width: 1100px; width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .lb-img-wrap {
+      overflow: hidden;
+      width: 100%; max-width: 1100px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius);
+      user-select: none;
+    }
+    .lb-img {
+      width: 100%; border-radius: var(--radius);
+      transform-origin: 0 0;
+      transition: transform 0.15s ease;
+      display: block;
+      pointer-events: none;
+    }
     .lb-close {
       position: absolute; top: -14px; right: -14px;
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--blue); color: #fff; border: none;
       font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      z-index: 10;
     }
     .lb-caption { text-align: center; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; }
+    .lb-zoom-hint { text-align: center; margin-top: 6px; font-size: 10px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
 <body>
@@ -103,8 +124,11 @@
 <div class="lightbox" id="lightbox">
   <div class="lb-inner">
     <button class="lb-close" id="lbClose">✕</button>
-    <img class="lb-img" id="lbImg" src="" alt="">
+    <div class="lb-img-wrap" id="lbWrap">
+      <img class="lb-img" id="lbImg" src="" alt="">
+    </div>
     <div class="lb-caption" id="lbCap"></div>
+    <div class="lb-zoom-hint" id="lbHint">Scroll ou pinch pour zoomer · Cliquez pour réinitialiser</div>
   </div>
 </div>
 
@@ -149,20 +173,114 @@ caps.forEach(c => {
   grid.appendChild(el);
 });
 
-// Lightbox
+// Lightbox with zoom/pan/pinch
 const lb = document.getElementById('lightbox');
 const lbImg = document.getElementById('lbImg');
 const lbCap = document.getElementById('lbCap');
+const lbWrap = document.getElementById('lbWrap');
+const lbHint = document.getElementById('lbHint');
+
+let scale = 1, minScale = 1, maxScale = 5;
+let translateX = 0, translateY = 0;
+let isDragging = false, startX = 0, startY = 0, lastTX = 0, lastTY = 0;
+
+function applyTransform(animate) {
+  lbImg.style.transition = animate ? 'transform 0.2s ease' : 'none';
+  lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  lb.classList.toggle('zoomed', scale > 1);
+}
+
+function resetZoom(animate) {
+  scale = 1; translateX = 0; translateY = 0;
+  applyTransform(animate);
+}
+
+function clampTranslate() {
+  const iw = lbImg.offsetWidth, ih = lbImg.offsetHeight;
+  const maxX = (iw * (scale - 1)) / 2;
+  const maxY = (ih * (scale - 1)) / 2;
+  translateX = Math.max(-maxX, Math.min(maxX, translateX));
+  translateY = Math.max(-maxY, Math.min(maxY, translateY));
+}
+
+// Open lightbox
 document.querySelectorAll('.cap-card').forEach(c => {
   c.addEventListener('click', () => {
     lbImg.src = c.dataset.img;
     lbCap.textContent = c.dataset.cap;
+    resetZoom(false);
     lb.classList.add('open');
   });
 });
-document.getElementById('lbClose').addEventListener('click', () => lb.classList.remove('open'));
-lb.addEventListener('click', e => { if(e.target === lb) lb.classList.remove('open'); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape') lb.classList.remove('open'); });
+
+// Close
+document.getElementById('lbClose').addEventListener('click', () => { lb.classList.remove('open'); resetZoom(false); });
+lb.addEventListener('click', e => { if (e.target === lb) { lb.classList.remove('open'); resetZoom(false); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { lb.classList.remove('open'); resetZoom(false); } });
+
+// Click on image: reset if zoomed, else zoom in
+lbImg.addEventListener('click', e => {
+  e.stopPropagation();
+  if (scale > 1) { resetZoom(true); }
+  else { scale = 2.5; applyTransform(true); }
+});
+
+// Scroll to zoom
+lbWrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY < 0 ? 0.15 : -0.15;
+  scale = Math.min(maxScale, Math.max(minScale, scale + delta));
+  if (scale === 1) { translateX = 0; translateY = 0; }
+  else clampTranslate();
+  applyTransform(false);
+}, { passive: false });
+
+// Mouse drag
+lbWrap.addEventListener('mousedown', e => {
+  if (scale <= 1) return;
+  isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY;
+  lb.classList.add('dragging');
+});
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  translateX = e.clientX - startX; translateY = e.clientY - startY;
+  clampTranslate(); applyTransform(false);
+});
+window.addEventListener('mouseup', () => { isDragging = false; lb.classList.remove('dragging'); });
+
+// Touch pinch-to-zoom + pan
+let lastDist = 0, lastMidX = 0, lastMidY = 0;
+lbWrap.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    lastDist = Math.hypot(dx, dy);
+    lastMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    lastMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+  } else if (e.touches.length === 1 && scale > 1) {
+    startX = e.touches[0].clientX - translateX;
+    startY = e.touches[0].clientY - translateY;
+  }
+}, { passive: true });
+lbWrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 2) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    const dist = Math.hypot(dx, dy);
+    const ratio = dist / lastDist;
+    scale = Math.min(maxScale, Math.max(minScale, scale * ratio));
+    lastDist = dist;
+    if (scale === 1) { translateX = 0; translateY = 0; }
+    else clampTranslate();
+    applyTransform(false);
+  } else if (e.touches.length === 1 && scale > 1) {
+    translateX = e.touches[0].clientX - startX;
+    translateY = e.touches[0].clientY - startY;
+    clampTranslate(); applyTransform(false);
+  }
+}, { passive: false });
+lbWrap.addEventListener('touchend', e => { if (e.touches.length < 2) lastDist = 0; });
 </script>
 </body>
 </html>

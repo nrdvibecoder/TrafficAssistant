@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="images/favicon.png" type="image/png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TrafficAssistant — Chatbot</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -75,6 +75,17 @@
       --df-messenger-font-color: #0f172a;
       --df-messenger-send-icon: #0055ff;
       --df-messenger-user-message: #0055ff;
+      --df-messenger-chat-border-radius: 24px;
+      --df-messenger-minimized-chat-close-icon-color: #fff;
+    }
+    /* Bigger chat window + rounder corners */
+    df-messenger::part(chat) {
+      width: 420px !important;
+      height: 620px !important;
+      border-radius: 24px !important;
+    }
+    df-messenger-chat {
+      border-radius: 24px !important;
     }
 
     @media(max-width:768px){ .chatbot-page { padding: 40px 16px 100px; } }
@@ -160,6 +171,38 @@
   language-code="fr">
 </df-messenger>
 <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<script>
+  function patchMessenger() {
+    const dfm = document.querySelector('df-messenger');
+    if (!dfm || !dfm.shadowRoot) { setTimeout(patchMessenger, 400); return; }
+    const s1 = document.createElement('style');
+    s1.textContent = `
+      df-messenger-chat {
+        width: 420px !important;
+        height: 620px !important;
+        border-radius: 24px !important;
+        overflow: hidden !important;
+        box-shadow: 0 20px 60px rgba(0,85,255,0.18) !important;
+      }
+    `;
+    dfm.shadowRoot.appendChild(s1);
+    const chat = dfm.shadowRoot.querySelector('df-messenger-chat');
+    if (chat && chat.shadowRoot) {
+      const s2 = document.createElement('style');
+      s2.textContent = `
+        :host { border-radius: 24px !important; overflow: hidden !important; }
+        .chat-wrapper, #df-chat-wrapper, .chat-container {
+          border-radius: 24px !important;
+          width: 420px !important;
+          height: 620px !important;
+          overflow: hidden !important;
+        }
+      `;
+      chat.shadowRoot.appendChild(s2);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', () => setTimeout(patchMessenger, 900));
+</script>
 
 <script src="theme.js"></script>
 </body>
